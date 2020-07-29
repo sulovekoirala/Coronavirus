@@ -5,7 +5,7 @@ Email: sulovekoirala@gmail.com (for enquires and suggestions)
 
 
 <H1> R </H1>
-[Rpubs Link](https://rpubs.com/sulovekoirala/644198) 
+Rpubs Link : https://rpubs.com/sulovekoirala/644198
 
 ![](../master/Files/Images/Annotation%202020-07-29%20213912.jpg)
 
