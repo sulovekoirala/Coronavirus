@@ -11,6 +11,6 @@ Email: sulovekoirala@gmail.com (for enquires and suggestions)
 
 <H1> Python </H1>
 
-![](../master/Files/Images/Annotation 2020-07-29 214923.jpg)
+![](../master/Files/Images/Annotation%2020-07-29 214923.jpg)
 
 
