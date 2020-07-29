@@ -5,13 +5,13 @@ Email: sulovekoirala@gmail.com (for enquires and suggestions)
 
 
 <H1> R </H1>
-Rpub Link: https://rpubs.com/sulovekoirala/644198 
+[Rpubs Link](https://rpubs.com/sulovekoirala/644198) 
 
 ![](../master/Files/Images/Annotation%202020-07-29%20213912.jpg)
 
 <H1> Python </H1>
 
-[Link](https://github.com/sulovek/Coronavirus/blob/master/Python%20Script%20for%20obtaining%20latest%20Data%20and%20Analysis%20of%20COVID-19.ipynb)
+[Notebook Link](https://github.com/sulovek/Coronavirus/blob/master/Python%20Script%20for%20obtaining%20latest%20Data%20and%20Analysis%20of%20COVID-19.ipynb)
 
 ![](../master/Files/Images/Annotation%202020-07-29%20214923.jpg)
 
