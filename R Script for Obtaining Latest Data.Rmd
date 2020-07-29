@@ -1,0 +1,152 @@
+---
+title: "Coronavirus R Package"
+author: "Dr. Sulove Koirala"
+date: "7/21/2020"
+output: md_document
+---
+
+
+## Introduction
+We will be analyzing COVID-19 statistics using the R package, "coronavirus". The package provides the latest data by scrapping the data from Johns Hopkins University Center for Systems Science and Engineering (JHU-CCSE) Coronavirus repository. The code can be refreshed to obtain the latest information, provided that you installed the required packages. 
+For any kind of collaboration or help reach me at sulovekoirala@gmail.com
+
+## Installation of the coronavirus package
+install.packages("devtools") 
+devtools::install_github("RamiKrispin/coronavirus")
+
+## Loading the packages
+```{r message=FALSE}
+library(coronavirus)
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+library(countrycode)
+library(kableExtra)
+library(tidyr)
+library(knitr)
+```
+
+## Importing the latest data 
+```{r}
+data = refresh_coronavirus_jhu()
+head(data)
+str(data)
+```
+
+## Cleaning
+Let's change the date from character format to date format. We are ordering data based on date. The reason is that it is necessary to perform time series analysis. At last, we are going to change the name of the variables in the data_type column. For eg. "cases" in place of "cases_new". 
+```{r}
+# Converting Character to Date
+data$date = ymd(data$date)
+# Ordering the data
+data = data[order(data$date, decreasing = F),]
+# Renaming the values in data_type column
+data$data_type <- gsub('cases_new', 'cases', data$data_type)
+data$data_type <- gsub('deaths_new', 'deaths', data$data_type)
+data$data_type <- gsub('recovered_new', 'recovered', data$data_type)
+options(scipen = 999) # Removing scientific notation in plots
+```
+
+## Analysis 
+Let's see the total number of cases, recovered and deaths in the world. 
+
+```{r}
+data %>% 
+  group_by(data_type) %>%
+  summarise(total = sum(value)) %>% 
+  kable(digits = 2, format = "html", row.names = TRUE) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+### Time series analysis of COVID-19 cases in the world.
+
+```{r}
+data %>% 
+    group_by(date, data_type) %>%
+    summarise(count = sum(value)) %>% 
+    ggplot()+
+    aes(date, count, color = data_type)+
+    geom_line(size = 1, alpha = 0.9)+
+    scale_color_manual(values=c("blue", "red", "green"))+
+    theme_minimal()+
+    theme(legend.title = element_blank())+
+    labs(x = "", y = "", title = "Daily New Cases, Deaths and Recovery", subtitle = today())
+```
+
+### Continent wise data
+We will use "countrycode" package to assign the continent name to the countries in the dataset. We will make a separate column for continent
+```{r}
+countrydata = filter(data, location_type == 'country')
+countrydata$continent = countrycode(sourcevar = countrydata[, "location"],
+                               origin = "country.name",
+                               destination = "continent")
+head(countrydata)
+```
+
+```{r}
+# Removing cruise ships data and assigning Kosovo to Europe
+countrydata$continent[countrydata$location == "Kosovo"] = "Europe"
+countrydata = countrydata[- grep("Diamond Princess", countrydata$location),]
+countrydata = countrydata[- grep("MS Zaandam", countrydata$location),]
+```
+
+```{r}
+# Cumulative Cases Continent wise
+continent_df = countrydata %>%
+    group_by(continent, data_type) %>%
+    mutate(cumvalues = cumsum(value)) %>%
+    select(date,continent, data_type, cumvalues)
+```
+
+```{r}
+# Plot
+ggplot(continent_df)+
+    aes(date, cumvalues, color = data_type)+
+    geom_line(size = 1)+
+    facet_wrap(~continent, scales = "free_y")+
+    theme_minimal()+
+    labs(x = "", y = "Cumulative Value", title = "Situtaiton of COVID-19 in different continents", subtitle = today())+
+    scale_color_discrete(name="")+
+    theme(legend.background = element_rect(fill="#fcfcfc", size=.5, linetype="dotted"), legend.position = "bottom", legend.title = element_blank()) +
+    scale_color_manual(values=c("blue", "red", "green"))
+```
+
+
+### Country and province wise data
+```{r}
+df = data %>%
+  group_by(location, data_type) %>%
+  summarise(total = sum(value)) %>%
+  pivot_wider(names_from =  data_type, values_from = total) %>%
+  mutate(active = cases - ifelse(is.na(recovered), 0, recovered) - ifelse(is.na(deaths), 0, deaths)) %>%
+  arrange(-cases) %>%
+  ungroup() %>%
+  mutate(location = if_else(location == "United Arab Emirates", "UAE", location)) %>%
+  mutate(location = if_else(location == "Mainland China", "China", location)) %>%
+  mutate(location = if_else(location == "North Macedonia", "N.Macedonia", location)) %>%
+  mutate(location = trimws(location)) %>%
+  mutate(location = factor(location, levels = location))
+df %>% kable(digits = 2, format = "html", row.names = TRUE) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"),
+                full_width = T,
+                font_size = 15) %>%
+   scroll_box(height = "300px")
+```
+
+```{r}
+df %>% 
+    filter(cases > 5000) %>%
+    ggplot()+
+    geom_text(aes(cases, deaths, label = location), check_overlap = T)+
+    theme_minimal()+
+    labs(title = "Cases vs Deaths plot", subtitle = today())
+```
+
+
+## Bibliography
+
+1. CSSEGISandData. (2020). CSSEGISandData/COVID-19.     https://github.com/CSSEGISandData/COVID-19 (Original work published 2020)
+2. Krispin, R. (2020). RamiKrispin/coronavirus [R]. https://github.com/RamiKrispin/coronavirus (Original work published 2020)
+
+
+
