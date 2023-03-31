@@ -5,7 +5,7 @@ Email: sulovekoirala@gmail.com (for enquires and suggestions)
 
 
 <H1> R </H1>
-Rpubs Link : https://rpubs.com/sulovekoirala/644198
+Rpubs Link : https://rpubs.com/sulovekoirala/
 
 <img src = "https://raw.githubusercontent.com/sulovek/Coronavirus/master/Files/Images/Case%20curve%20in%20europe.svg">
 
