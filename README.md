@@ -7,7 +7,7 @@ Email: sulovekoirala@gmail.com (for enquires and suggestions)
 <H1> R </H1>
 Rpubs Link : https://rpubs.com/sulovekoirala/644198
 
-![](../master/Files/Images/Case curve in europe.svg)
+<img src = "https://raw.githubusercontent.com/sulovek/Coronavirus/master/Files/Images/Case%20curve%20in%20europe.svg">
 
 <H1> Python </H1>
 
